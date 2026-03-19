@@ -31,24 +31,40 @@ if (navigator.geolocation) {
     alert("Geolocation not supported.");
 }
 
-var client = new Paho.MQTT.Client(
-    "broker.hivemq.com",
-    8884,
-    "/mqtt",
-    "clientId_" + Math.random()
-);
+var client;
 
-client.connect({
-    onSuccess: onConnect,
-    useSSL: true
-});
+// Start connection
+function startConnection() {
 
-function onConnect() {
-    console.log("Connected to MQTT broker");
+    client = new Paho.MQTT.Client(
+        "broker.hivemq.com",
+        8884,
+        "/mqtt",
+        "clientId_" + Math.random()
+    );
 
-    client.subscribe("ENGO651/test");
+    client.connect({
+        onSuccess: onConnect,
+        useSSL: true
+    });
 }
 
-client.onMessageArrived = function(message) {
+// When connected
+function onConnect() {
+    console.log("Connected to MQTT broker");
+    client.subscribe("ENGO651/test");
+    client.onMessageArrived = onMessageArrived;
+}
+
+// End connection
+function endConnection() {
+    if (client) {
+        client.disconnect();
+        console.log("Disconnected from MQTT broker");
+    }
+}
+
+// Receive messages
+function onMessageArrived(message) {
     console.log("Message received:", message.payloadString);
-};
+}
