@@ -30,3 +30,25 @@ if (navigator.geolocation) {
 } else {
     alert("Geolocation not supported.");
 }
+
+var client = new Paho.MQTT.Client(
+    "broker.hivemq.com",
+    8884,
+    "/mqtt",
+    "clientId_" + Math.random()
+);
+
+client.connect({
+    onSuccess: onConnect,
+    useSSL: true
+});
+
+function onConnect() {
+    console.log("Connected to MQTT broker");
+
+    client.subscribe("ENGO651/test");
+}
+
+client.onMessageArrived = function(message) {
+    console.log("Message received:", message.payloadString);
+};
