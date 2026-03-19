@@ -68,3 +68,50 @@ function endConnection() {
 function onMessageArrived(message) {
     console.log("Message received:", message.payloadString);
 }
+
+function shareStatus() {
+
+    if (!client || !client.isConnected()) {
+        alert("Please click Start first!");
+        return;
+    }
+
+    if (navigator.geolocation) {
+
+        navigator.geolocation.getCurrentPosition(function(position) {
+
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
+
+            // Generate random temperature
+            var temp = Math.floor(Math.random() * 70) - 10;
+
+            // Create GeoJSON
+            var geojson = {
+                type: "Feature",
+                geometry: {
+                    type: "Point",
+                    coordinates: [lon, lat]
+                },
+                properties: {
+                    temperature: temp
+                }
+            };
+
+            // Convert to string
+            var message = new Paho.MQTT.Message(JSON.stringify(geojson));
+
+            // Set topic (FOLLOW YOUR LAB FORMAT)
+            message.destinationName = "ENGO651/WeiHe/my_temperature";
+
+            // Send message
+            client.send(message);
+
+            console.log("Message sent:", geojson);
+
+        });
+
+    } else {
+        alert("Geolocation not supported.");
+    }
+}
