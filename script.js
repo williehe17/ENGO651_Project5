@@ -52,7 +52,7 @@ function startConnection() {
 // When connected
 function onConnect() {
     console.log("Connected to MQTT broker");
-    client.subscribe("ENGO651/test");
+    client.subscribe("ENGO651/WeiHe/my_temperature");
     client.onMessageArrived = onMessageArrived;
 }
 
@@ -62,11 +62,6 @@ function endConnection() {
         client.disconnect();
         console.log("Disconnected from MQTT broker");
     }
-}
-
-// Receive messages
-function onMessageArrived(message) {
-    console.log("Message received:", message.payloadString);
 }
 
 function shareStatus() {
@@ -83,10 +78,10 @@ function shareStatus() {
             var lat = position.coords.latitude;
             var lon = position.coords.longitude;
 
-            // Generate random temperature
+            // Random temperature
             var temp = Math.floor(Math.random() * 70) - 10;
 
-            // Create GeoJSON
+            // GeoJSON
             var geojson = {
                 type: "Feature",
                 geometry: {
@@ -98,13 +93,10 @@ function shareStatus() {
                 }
             };
 
-            // Convert to string
             var message = new Paho.MQTT.Message(JSON.stringify(geojson));
 
-            // Set topic (FOLLOW YOUR LAB FORMAT)
             message.destinationName = "ENGO651/WeiHe/my_temperature";
 
-            // Send message
             client.send(message);
 
             console.log("Message sent:", geojson);
@@ -114,4 +106,37 @@ function shareStatus() {
     } else {
         alert("Geolocation not supported.");
     }
+}
+
+function onMessageArrived(message) {
+
+    console.log("Message received:", message.payloadString);
+
+    // Parse GeoJSON
+    var data = JSON.parse(message.payloadString);
+
+    var lon = data.geometry.coordinates[0];
+    var lat = data.geometry.coordinates[1];
+    var temp = data.properties.temperature;
+
+    // Determine color based on temperature
+    var color;
+
+    if (temp < 10) {
+        color = "blue";
+    } else if (temp >= 10 && temp < 30) {
+        color = "green";
+    } else {
+        color = "red";
+    }
+
+    // Add circle marker
+    L.circleMarker([lat, lon], {
+        radius: 8,
+        color: color,
+        fillColor: color,
+        fillOpacity: 0.8
+    })
+    .addTo(map)
+    .bindPopup("Temperature: " + temp + "°C");
 }
