@@ -33,12 +33,17 @@ if (navigator.geolocation) {
 
 var client;
 
-// Start connection
 function startConnection() {
 
+    const hostInput = document.getElementById("host");
+    const portInput = document.getElementById("port");
+
+    const host = hostInput.value;
+    const port = parseInt(portInput.value);
+
     client = new Paho.MQTT.Client(
-        "broker.hivemq.com",
-        8884,
+        host,
+        port,
         "/mqtt",
         "clientId_" + Math.random()
     );
@@ -47,6 +52,10 @@ function startConnection() {
         onSuccess: onConnect,
         useSSL: true
     });
+
+    // Disable inputs after connection
+    hostInput.disabled = true;
+    portInput.disabled = true;
 }
 
 // When connected
@@ -56,12 +65,13 @@ function onConnect() {
     client.onMessageArrived = onMessageArrived;
 }
 
-// End connection
 function endConnection() {
     if (client) {
         client.disconnect();
-        console.log("Disconnected from MQTT broker");
     }
+
+    document.getElementById("host").disabled = false;
+    document.getElementById("port").disabled = false;
 }
 
 function shareStatus() {
