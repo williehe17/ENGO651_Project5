@@ -49,7 +49,7 @@ function startConnection() {
     );
 
     client.onConnectionLost = function(responseObject) {
-        console.log("Connection lost");
+        console.log("Connection lost", responseObject);
 
         alert("Connection lost. Reconnecting...");
 
@@ -57,10 +57,12 @@ function startConnection() {
             startConnection();
         }, 2000);
     };
-    
+
     client.connect({
         onSuccess: onConnect,
-        useSSL: true
+        useSSL: true,
+        timeout: 3,          
+        keepAliveInterval: 5 
     });
 
     // Disable inputs after connection
