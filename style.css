@@ -10,19 +10,7 @@ html, body {
 }
 
 button {
-    font-size: 18px;
-    padding: 12px 20px;
-    margin: 8px;
-    border: none;
-    border-radius: 8px;
-    background-color: #007bff;
-    color: white;
+    font-size: 18px;   /* slightly bigger text */
+    padding: 10px 16px; /* slightly bigger button */
 }
 
-/* Make buttons full width on mobile */
-@media (max-width: 600px) {
-    button {
-        width: 90%;
-        font-size: 20px;
-    }
-}
