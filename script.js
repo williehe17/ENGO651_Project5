@@ -48,6 +48,16 @@ function startConnection() {
         "clientId_" + Math.random()
     );
 
+    client.onConnectionLost = function(responseObject) {
+        console.log("Connection lost");
+
+        alert("Connection lost. Reconnecting...");
+
+        setTimeout(() => {
+            startConnection();
+        }, 2000);
+    };
+    
     client.connect({
         onSuccess: onConnect,
         useSSL: true
