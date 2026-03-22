@@ -152,6 +152,8 @@ function onMessageArrived(message) {
         color = "red";
     }
 
+    map.setView([lat, lon], 15);
+    
     // Add circle marker
     L.circleMarker([lat, lon], {
         radius: 8,
