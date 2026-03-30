@@ -175,9 +175,7 @@ if (temp < 10) {
 * If the broker disconnects, the application will automatically attempt to reconnect after 2 seconds.
 * Best tested in Google Chrome.
 
----
-
 ## Author
 Wei He – University of Calgary
-Wei He
-ENGO651/551 – University of Calgary
+---
+
